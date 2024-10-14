@@ -24,12 +24,13 @@
 */
 
 import cloneDeep from 'lodash/cloneDeep';
-import setFp from 'lodash/fp/set';
+import setWithFp from 'lodash/fp/setWith';
 import unsetFp from 'lodash/fp/unset';
 import get from 'lodash/get';
 import filter from 'lodash/filter';
 import isEqual from 'lodash/isEqual';
 import isFunction from 'lodash/isFunction';
+import isObject from 'lodash/isObject';
 import type Ajv from 'ajv';
 import type { ErrorObject, ValidateFunction } from 'ajv';
 import {
@@ -273,7 +274,8 @@ export const coreReducer: Reducer<JsonFormsCore, CoreActions> = (
         const newData = action.updater(cloneDeep(oldData));
         let newState: any;
         if (newData !== undefined) {
-          newState = setFp(
+          newState = setWithFp(
+            (v: any) => (isObject(v) ? v : {}),
             action.path,
             newData,
             state.data === undefined ? {} : state.data
